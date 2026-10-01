@@ -1,0 +1,39 @@
+[2026-03-30 02:30:08 +0000] [640359] [INFO] Starting gunicorn 25.3.0
+[2026-03-30 02:30:08 +0000] [640359] [INFO] Listening at: unix:/home/myadmin/LEAP/gunicorn.sock (640359)
+[2026-03-30 02:30:08 +0000] [640359] [INFO] Using worker: sync
+[2026-03-30 02:30:08 +0000] [640363] [INFO] Booting worker with pid: 640363
+[2026-03-30 02:30:08 +0000] [640364] [INFO] Booting worker with pid: 640364
+[2026-03-30 02:30:08 +0000] [640365] [INFO] Booting worker with pid: 640365
+[2026-03-30 02:30:09 +0000] [640359] [INFO] Control socket listening at /run/user/1001/gunicorn.ctl
+[2026-03-30 08:00:08 +0530] [594811] [INFO] Worker exiting (pid: 594811)
+[2026-03-30 02:30:08 +0000] [594807] [INFO] Handling signal: term
+[2026-03-30 08:00:08 +0530] [594809] [INFO] Worker exiting (pid: 594809)
+[2026-03-30 08:00:08 +0530] [594810] [INFO] Worker exiting (pid: 594810)
+Traceback (most recent call last):
+  File "/home/myadmin/LEAP/myenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 246, in run
+    handler()
+  File "/home/myadmin/LEAP/myenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 293, in handle_term
+    raise StopIteration
+StopIteration
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/myadmin/LEAP/myenv/bin/gunicorn", line 8, in <module>
+    sys.exit(run())
+             ^^^^^
+  File "/home/myadmin/LEAP/myenv/lib/python3.12/site-packages/gunicorn/app/wsgiapp.py", line 66, in run
+    WSGIApplication("%(prog)s [OPTIONS] [APP_MODULE]", prog=prog).run()
+  File "/home/myadmin/LEAP/myenv/lib/python3.12/site-packages/gunicorn/app/base.py", line 235, in run
+    super().run()
+  File "/home/myadmin/LEAP/myenv/lib/python3.12/site-packages/gunicorn/app/base.py", line 71, in run
+    Arbiter(self).run()
+  File "/home/myadmin/LEAP/myenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 252, in run
+    self.halt()
+  File "/home/myadmin/LEAP/myenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 378, in halt
+    self.stop()
+  File "/home/myadmin/LEAP/myenv/lib/python3.12/site-packages/gunicorn/arbiter.py", line 427, in stop
+    sock.close_sockets(self.LISTENERS, unlink)
+  File "/home/myadmin/LEAP/myenv/lib/python3.12/site-packages/gunicorn/sock.py", line 235, in close_sockets
+    os.unlink(sock_name)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/myadmin/LEAP/gunicorn.sock'
