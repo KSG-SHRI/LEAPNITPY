@@ -3,6 +3,7 @@ import warnings
 from pathlib import Path
 from decouple import config, Csv
 from django.core.management.utils import get_random_secret_key
+from django.core.exceptions import ImproperlyConfigured
 
 # -------------------------
 # BASE DIRECTORY
@@ -33,8 +34,13 @@ def bool_config(name, default):
 # -------------------------
 # SECURITY SETTINGS
 # -------------------------
-SECRET_KEY = config('DJANGO_SECRET_KEY', default=get_random_secret_key())
-DEBUG = bool_config('DJANGO_DEBUG', True)
+DEBUG = bool_config('DJANGO_DEBUG', False)
+SECRET_KEY = config('DJANGO_SECRET_KEY', default='')
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = get_random_secret_key()
+    else:
+        raise ImproperlyConfigured('DJANGO_SECRET_KEY must be set when DJANGO_DEBUG is false.')
 ALLOWED_HOSTS = config(
     'DJANGO_ALLOWED_HOSTS',
     default='127.0.0.1,localhost',
@@ -184,12 +190,9 @@ EMAIL_USE_TLS = bool_config('EMAIL_USE_TLS', True)
 # -------------------------
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_HSTS_SECONDS = 31536000  # 1 year
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-SECURE_SSL_REDIRECT = True  # Force HTTPS
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
+SECURE_HSTS_PRELOAD = not DEBUG
 
 # Trust Cloudflare's HTTPS header
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -243,6 +246,6 @@ ACCOUNT_EMAIL_VERIFICATION = 'optional'  # Can be 'mandatory' if you want email 
 SOCIALACCOUNT_AUTO_SIGNUP = True          # Automatically create users on first login
 SOCIALACCOUNT_QUERY_EMAIL = True          # Make sure email is fetched from provider
 SOCIALACCOUNT_ADAPTER = 'website.adapter.MySocialAccountAdapter'
-SECURE_SSL_REDIRECT = bool_config('DJANGO_SECURE_SSL_REDIRECT', False)
-SESSION_COOKIE_SECURE = bool_config('DJANGO_SESSION_COOKIE_SECURE', False)
-CSRF_COOKIE_SECURE = bool_config('DJANGO_CSRF_COOKIE_SECURE', False)
+SECURE_SSL_REDIRECT = bool_config('DJANGO_SECURE_SSL_REDIRECT', not DEBUG)
+SESSION_COOKIE_SECURE = bool_config('DJANGO_SESSION_COOKIE_SECURE', not DEBUG)
+CSRF_COOKIE_SECURE = bool_config('DJANGO_CSRF_COOKIE_SECURE', not DEBUG)
