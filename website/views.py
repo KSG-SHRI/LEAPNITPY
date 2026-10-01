@@ -142,10 +142,8 @@ def saving_result(request):
         if missing:
             return JsonResponse({'success': False, 'message': f'Missing fields: {", ".join(missing)}'}, status=400)
 
-        user = User.objects.first()
-
         result = TestResult.objects.create(
-            user=user,
+            user=request.user,
             test_name=data['test_name'],
             mode=data['mode'],
             score=int(data['score']),
