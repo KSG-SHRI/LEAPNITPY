@@ -142,3 +142,9 @@ config/
 staticfiles/
 
 setup_leap_production.sh
+# Deployment secrets and generated artifacts
+.env.*
+!.env.example
+myenv/
+nohup.out
+server.log
