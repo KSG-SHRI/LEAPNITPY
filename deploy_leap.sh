@@ -1,11 +1,12 @@
 #!/bin/bash
 set -Eeuo pipefail
 
-APP_DIR="/home/myadmin/LEAP"
-VENV_DIR="$APP_DIR/myenv"
-SOCKET_PATH="$APP_DIR/gunicorn.sock"
-NOHUP_LOG="$APP_DIR/nohup.out"
-ACCESS_LOG="$APP_DIR/server.log"
+APP_DIR="/path/to/your/app"
+VENV_DIR="$APP_DIR/.venv"
+SOCKET_PATH="$APP_DIR/run/gunicorn.sock"
+NOHUP_LOG="$APP_DIR/logs/gunicorn.out"
+ACCESS_LOG="$APP_DIR/logs/server.log"
+PUBLIC_HOST="${PUBLIC_HOST:-example.com}"
 GUNICORN_MATCH="gunicorn.*LeapWeb.wsgi:application"
 
 log() {
@@ -26,6 +27,7 @@ dump_debug() {
 trap 'log "deployment failed"; dump_debug' ERR
 
 cd "$APP_DIR"
+mkdir -p "$(dirname "$SOCKET_PATH")" "$(dirname "$NOHUP_LOG")" "$(dirname "$ACCESS_LOG")"
 source "$VENV_DIR/bin/activate"
 
 log "installing dependencies"
@@ -59,7 +61,7 @@ for attempt in 1 2 3 4 5; do
   if [ -S "$SOCKET_PATH" ]; then
     log "gunicorn socket created"
     log "setting socket permissions for nginx"
-    chmod 666 "$SOCKET_PATH"
+    chmod 660 "$SOCKET_PATH"
     ls -l "$SOCKET_PATH"
     log "verifying gunicorn over unix socket"
     UNIX_STATUS="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' --unix-socket "$SOCKET_PATH" http://localhost/)"
@@ -73,7 +75,7 @@ for attempt in 1 2 3 4 5; do
         ;;
     esac
     log "verifying nginx HTTPS upstream"
-    HTTPS_STATUS="$(curl --silent --show-error --insecure --output /dev/null --write-out '%{http_code}' -H "Host: leapnitpy.org" https://127.0.0.1/)"
+    HTTPS_STATUS="$(curl --silent --show-error --insecure --output /dev/null --write-out '%{http_code}' -H "Host: $PUBLIC_HOST" https://127.0.0.1/)"
     log "nginx HTTPS status: $HTTPS_STATUS"
     case "$HTTPS_STATUS" in
       200|301|302) ;;
