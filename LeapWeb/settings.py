@@ -236,10 +236,8 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
 # User account settings
-ACCOUNT_USER_MODEL_USERNAME_FIELD = None  # No username field, email used instead
-ACCOUNT_USERNAME_REQUIRED = False         # Don’t require username
-ACCOUNT_EMAIL_REQUIRED = True             # Email is required
-ACCOUNT_AUTHENTICATION_METHOD = 'email'  # Login via email only
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 ACCOUNT_EMAIL_VERIFICATION = 'optional'  # Can be 'mandatory' if you want email verification
 
 # Social account settings
