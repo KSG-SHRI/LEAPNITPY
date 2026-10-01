@@ -1,7 +1,6 @@
 import json
 import logging
 from datetime import timedelta
-from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from django.http import JsonResponse
 from django.contrib import messages
@@ -166,7 +165,6 @@ def saving_result(request):
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)}, status=500)
 @login_required
-@csrf_exempt
 def save_message(request):
     if request.method != "POST":
         return JsonResponse({'success': False, 'message': 'POST required'}, status=400)
@@ -475,7 +473,6 @@ def mock_test_view(request, pk):
         "duration": duration_seconds 
     })
 
-@csrf_exempt  
 @login_required
 def submit_test(request):
     if request.method != "POST":
@@ -788,7 +785,6 @@ from django.shortcuts import render
 
 def register(request):
     return render(request, 'register.html')
-@csrf_exempt
 def save_test_result(request):
     if request.method == "POST" and request.user.is_authenticated:
         data = json.loads(request.body)
