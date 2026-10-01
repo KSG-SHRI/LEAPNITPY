@@ -19,6 +19,8 @@ A Django learning and mentorship platform for JEE/NEET students. It includes Goo
 
 Production must set a persistent, randomly generated `DJANGO_SECRET_KEY`, `DJANGO_DEBUG=False`, `DJANGO_ALLOWED_HOSTS`, the database variables, and the Google OAuth variables. HTTPS is required in production; secure cookies and HTTPS redirection default to on when debug is off. Verify that the reverse proxy strips untrusted `X-Forwarded-Proto` headers before deployment.
 
+Before the next Hostinger deployment, check the existing virtual environment: the initial requirements listed the unrelated `jwt` package instead of `PyJWT`, which django-allauth's Google provider expects. Remove `jwt` from that environment, then install the updated requirements and run `python manage.py check --deploy` before restarting Gunicorn. Do this on the server, not in the public repository.
+
 ## Security notes
 
 - `.env`, local environments, generated static files, and logs are ignored for new additions. Some machine-generated files are still tracked in the initial commit; do not delete the virtual environment on the live Hostinger server without first creating a replacement.
